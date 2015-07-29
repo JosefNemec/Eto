@@ -36,13 +36,12 @@
   </PropertyGroup>
   <Import Project="../../Shared/Common.targets" />
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\NUnit.3.0.0-beta-2\lib\net40\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Configuration" />
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\packages\NUnit.3.0.0-beta-2\lib\net40\nunit.framework.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -178,20 +177,6 @@
     <Compile Include="Sections\Behaviors\ClipboardSection.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Eto.Serialization.Json\Eto.Serialization.Json.csproj">
-      <Project>{2F2C45E0-4142-44D0-8A0C-7264C0F925B2}</Project>
-      <Name>Eto.Serialization.Json</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Eto\Eto.csproj">
-      <Project>{16289D2F-044C-49EF-83E9-9391AFF8FD2B}</Project>
-      <Name>Eto</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Eto.Serialization.Xaml\Eto.Serialization.Xaml.csproj">
-      <Project>{FA4BC167-9909-45D2-B86A-D4AE4062A524}</Project>
-      <Name>Eto.Serialization.Xaml</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="TestIcon.ico" />
     <EmbeddedResource Include="Sections\Serialization\Xaml\Test.xaml">
       <SubType>Designer</SubType>
@@ -225,4 +210,18 @@
   </ProjectExtensions>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Import Project="../../Shared/Build.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\Eto\Eto.csproj">
+      <Project>{16289D2F-044C-49EF-83E9-9391AFF8FD2B}</Project>
+      <Name>Eto</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Eto.Serialization.Xaml\Eto.Serialization.Xaml.csproj">
+      <Project>{FA4BC167-9909-45D2-B86A-D4AE4062A524}</Project>
+      <Name>Eto.Serialization.Xaml</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Eto.Serialization.Json\Eto.Serialization.Json.csproj">
+      <Project>{2F2C45E0-4142-44D0-8A0C-7264C0F925B2}</Project>
+      <Name>Eto.Serialization.Json</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

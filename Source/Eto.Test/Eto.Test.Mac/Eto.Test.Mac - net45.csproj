@@ -74,21 +74,13 @@
       <Project>{3E7995E0-C9EB-11E3-9C1A-0800200C9A66}</Project>
       <Name>Eto.Mac - net45</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Eto.Test\Eto.Test - pcl.csproj">
-      <Project>{EB9C0A22-6644-46E4-948C-F7C95E1F8CE1}</Project>
-      <Name>Eto.Test - pcl</Name>
+    <ProjectReference Include="..\..\Eto\Eto.csproj">
+      <Project>{16289D2F-044C-49EF-83E9-9391AFF8FD2B}</Project>
+      <Name>Eto</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Eto\Eto - pcl.csproj">
-      <Project>{35EF0A4E-2A1A-492C-8BED-106774EA09F2}</Project>
-      <Name>Eto - pcl</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Eto.Serialization.Json\Eto.Serialization.Json - pcl.csproj">
-      <Project>{3F8178EF-0710-43F7-92E2-130B9BE2212D}</Project>
-      <Name>Eto.Serialization.Json - pcl</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Eto.Serialization.Xaml\Eto.Serialization.Xaml - net45.csproj">
-      <Project>{231FB3B0-CB71-11E3-9C1A-0800200C9A66}</Project>
-      <Name>Eto.Serialization.Xaml - net45</Name>
+    <ProjectReference Include="..\Eto.Test\Eto.Test.csproj">
+      <Project>{F8F400B8-A2F6-4342-82F6-D6D8B544A7E5}</Project>
+      <Name>Eto.Test</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="../../Shared/Build.targets" />
