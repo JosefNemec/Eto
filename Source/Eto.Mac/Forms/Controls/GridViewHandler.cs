@@ -96,9 +96,16 @@ namespace Eto.Mac.Forms.Controls
 
 			public override NSObject GetObjectValue(NSTableView tableView, NSTableColumn tableColumn, nint row)
 			{
-				var item = Handler.collection.ElementAt((int)row);
-				var colHandler = Handler.GetColumn(tableColumn);
-				return colHandler == null ? null : colHandler.GetObjectValue(item);
+                try
+                {
+                    var item = Handler.collection.ElementAt((int)row);
+                    var colHandler = Handler.GetColumn(tableColumn);
+                    return colHandler == null ? null : colHandler.GetObjectValue(item);
+                }
+                catch
+                {
+                    return null;
+                }
 			}
 
 			public override void SetObjectValue(NSTableView tableView, NSObject theObject, NSTableColumn tableColumn, nint row)
@@ -145,9 +152,16 @@ namespace Eto.Mac.Forms.Controls
 
 			public override void WillDisplayCell(NSTableView tableView, NSObject cell, NSTableColumn tableColumn, nint row)
 			{
-				var colHandler = Handler.GetColumn(tableColumn);
-				var item = Handler.GetItem((int)row);
-				Handler.OnCellFormatting(colHandler.Widget, item, (int)row, cell as NSCell);
+                try
+                {
+                    var colHandler = Handler.GetColumn(tableColumn);
+                    var item = Handler.GetItem((int)row);
+                    Handler.OnCellFormatting(colHandler.Widget, item, (int)row, cell as NSCell);
+                }
+                catch
+                {
+
+                }
 			}
 
 			public override void ColumnDidResize(NSNotification notification)

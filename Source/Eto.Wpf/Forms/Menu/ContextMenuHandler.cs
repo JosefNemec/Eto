@@ -1,15 +1,22 @@
 using swc = System.Windows.Controls;
 using sw = System.Windows;
 using Eto.Forms;
+using System;
 
 namespace Eto.Wpf.Forms.Menu
 {
-	public class ContextMenuHandler : WidgetHandler<swc.ContextMenu, ContextMenu>, ContextMenu.IHandler
+	public class ContextMenuHandler : WidgetHandler<swc.ContextMenu, ContextMenu, ContextMenu.ICallback>, ContextMenu.IHandler
 	{
 		public ContextMenuHandler ()
 		{
 			Control = new swc.ContextMenu ();
+            Control.Opened += Control_Opened;
 		}
+
+        void Control_Opened(object sender, sw.RoutedEventArgs e)
+        {
+            Callback.OnMenuOpening(Widget, EventArgs.Empty);
+        }
 
 		public void AddMenu (int index, MenuItem item)
 		{
