@@ -23,6 +23,7 @@ namespace Eto.Wpf.Forms.Controls
 		{
 			base.Initialize();
 			controller = new TreeController { Handler = this };
+            Control.BorderThickness = new System.Windows.Thickness(0);
 			Control.Background = sw.SystemColors.WindowBrush;
 			Control.GridLinesVisibility = swc.DataGridGridLinesVisibility.None;
 			Control.KeyDown += (sender, e) =>

@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 
 namespace Eto
 {
-	static class EventLookup
+	public static class EventLookup
 	{
 		static readonly Dictionary<Type, List<EventDeclaration>> registeredEvents = new Dictionary<Type, List<EventDeclaration>>();
 #if PCL
