@@ -81,6 +81,15 @@ namespace Eto.Mac.Forms.Controls
 
 				base.MouseDown(theEvent);
 			}
+
+			public override void RightMouseDown(NSEvent theEvent)
+			{
+				var point = ConvertPointFromView(theEvent.LocationInWindow, null);
+				int rowIndex = (int)GetRow(point);
+				SelectRow(rowIndex, false);
+
+				base.RightMouseDown(theEvent);
+			}
 		}
 
 		class EtoTableViewDataSource : NSTableViewDataSource

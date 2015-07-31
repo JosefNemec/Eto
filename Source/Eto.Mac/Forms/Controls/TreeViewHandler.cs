@@ -276,6 +276,15 @@ namespace Eto.Mac.Forms.Controls
 				} else
 					base.DrawBackground (clipRect);
 			}
+
+			public override void RightMouseDown(NSEvent theEvent)
+			{
+				var point = ConvertPointFromView(theEvent.LocationInWindow, null);
+				int rowIndex = (int)GetRow(point);
+				SelectRow(rowIndex, false);
+
+				base.RightMouseDown(theEvent);
+			}
 		}
 
 		public override NSView ContainerControl
