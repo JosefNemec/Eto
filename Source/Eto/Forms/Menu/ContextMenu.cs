@@ -28,6 +28,14 @@ namespace Eto.Forms
 	{
 		MenuItemCollection items;
 
+		public event EventHandler<EventArgs> MenuOpening;
+
+		protected virtual void OnMenuOpening(EventArgs e)
+		{
+			if (MenuOpening != null)
+				MenuOpening(this, e);
+		}
+
 		new IHandler Handler { get { return (IHandler)base.Handler; } }
 
 		/// <summary>
@@ -102,6 +110,33 @@ namespace Eto.Forms
 			base.OnUnLoad(e);
 			foreach (var item in Items)
 				item.OnLoad(e);
+		}
+
+		static readonly object callback = new Callback();
+
+		/// <summary>
+		/// Gets an instance of an object used to perform callbacks to the widget from handler implementations
+		/// </summary>
+		/// <returns>The callback instance to use for this widget</returns>
+		protected override object GetCallback()
+		{
+			return callback;
+		}
+
+		public new interface ICallback : Menu.ICallback
+		{
+			void OnMenuOpening(ContextMenu widget, EventArgs e);
+		}
+
+		/// <summary>
+		/// Callback implementation for handlers of the <see cref="ColorDialog"/>
+		/// </summary>
+		protected class Callback : ICallback
+		{
+			public void OnMenuOpening(ContextMenu widget, EventArgs e)
+			{
+				widget.Platform.Invoke(() => widget.OnMenuOpening(e));
+			}
 		}
 
 		/// <summary>

@@ -7,6 +7,7 @@ namespace Eto.GtkSharp.Forms.Menu
 		public ContextMenuHandler()
 		{
 			Control = new Gtk.Menu();
+			Control.Shown += (sender, e) => Callback.OnMenuOpening(Widget, System.EventArgs.Empty);
 			Control.ShowAll();
 		}
 

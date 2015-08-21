@@ -5,12 +5,13 @@ using Eto.Forms;
 
 namespace Eto.WinForms.Forms.Menu
 {
-	public class ContextMenuHandler : WidgetHandler<swf.ContextMenuStrip, ContextMenu>, ContextMenu.IHandler
+	public class ContextMenuHandler : WidgetHandler<swf.ContextMenuStrip, ContextMenu, ContextMenu.ICallback>, ContextMenu.IHandler
 	{
 
 		public ContextMenuHandler()
 		{
 			this.Control = new System.Windows.Forms.ContextMenuStrip();
+			this.Control.Opening += (sender, e) => Callback.OnMenuOpening(Widget, EventArgs.Empty);
 			this.Control.Opened += HandleOpened;
 		}
 
