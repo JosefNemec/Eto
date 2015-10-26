@@ -28,14 +28,6 @@ namespace Eto.Forms
 	{
 		MenuItemCollection items;
 
-		public event EventHandler<EventArgs> MenuOpening;
-
-		protected virtual void OnMenuOpening(EventArgs e)
-		{
-			if (MenuOpening != null)
-				MenuOpening(this, e);
-		}
-
 		new IHandler Handler { get { return (IHandler)base.Handler; } }
 
 		/// <summary>
@@ -112,6 +104,35 @@ namespace Eto.Forms
 				item.OnLoad(e);
 		}
 
+		/// <summary>
+		/// Event identifier for handlers when attaching the <see cref="ContextMenu.MenuOpening"/> event.
+		/// </summary>
+		public const string MenuOpeningEvent = "ContextMenu.MenuOpening";
+
+		/// <summary>
+		/// Occurs when context menu is opening.
+		/// </summary>
+		public event EventHandler<EventArgs> MenuOpening
+		{
+			add
+			{
+				Properties.AddHandlerEvent(MenuOpeningEvent, value);
+			}
+			remove
+			{
+				Properties.RemoveEvent(MenuOpeningEvent, value);
+			}
+		}
+
+		/// <summary>
+		/// Raises the <see cref="ContextMenu.MenuOpening"/> event.
+		/// </summary>
+		/// <param name="e">Event arguments</param>
+		protected virtual void OnMenuOpening(EventArgs e)
+		{
+			Properties.TriggerEvent(MenuOpeningEvent, this, e);
+		}
+
 		static readonly object callback = new Callback();
 
 		/// <summary>
@@ -123,8 +144,14 @@ namespace Eto.Forms
 			return callback;
 		}
 
+		/// <summary>
+		/// Callback interface for instances of <see cref="ContextMenu"/>
+		/// </summary>
 		public new interface ICallback : Menu.ICallback
 		{
+			/// <summary>
+			/// Raises the <see cref="ContextMenu.MenuOpening"/> event.
+			/// </summary>
 			void OnMenuOpening(ContextMenu widget, EventArgs e);
 		}
 
@@ -133,6 +160,9 @@ namespace Eto.Forms
 		/// </summary>
 		protected class Callback : ICallback
 		{
+			/// <summary>
+			/// Raises the <see cref="ContextMenu.MenuOpening"/> event.
+			/// </summary>
 			public void OnMenuOpening(ContextMenu widget, EventArgs e)
 			{
 				widget.Platform.Invoke(() => widget.OnMenuOpening(e));

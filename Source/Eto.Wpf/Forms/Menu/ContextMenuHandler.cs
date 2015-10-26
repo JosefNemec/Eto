@@ -9,8 +9,21 @@ namespace Eto.Wpf.Forms.Menu
 	{
 		public ContextMenuHandler ()
 		{
-			Control = new swc.ContextMenu ();
-			Control.Opened += (sender, e) => Callback.OnMenuOpening(Widget, EventArgs.Empty);
+			Control = new swc.ContextMenu();			
+		}
+
+		public override void AttachEvent(string id)
+		{
+			switch (id)
+			{
+				case ContextMenu.MenuOpeningEvent:
+					Control.Opened += (sender, e) => Callback.OnMenuOpening(Widget, EventArgs.Empty);
+					break;
+
+				default:
+					AttachEvent(id);
+					break;
+			}
 		}
 
 		public void AddMenu (int index, MenuItem item)

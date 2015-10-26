@@ -11,7 +11,6 @@ namespace Eto.WinForms.Forms.Menu
 		public ContextMenuHandler()
 		{
 			this.Control = new System.Windows.Forms.ContextMenuStrip();
-			this.Control.Opening += (sender, e) => Callback.OnMenuOpening(Widget, EventArgs.Empty);
 			this.Control.Opened += HandleOpened;
 		}
 
@@ -22,6 +21,20 @@ namespace Eto.WinForms.Forms.Menu
 				var callback = ((ICallbackSource)item).Callback as MenuItem.ICallback;
 				if (callback != null)
 					callback.OnValidate(item, e);
+			}
+		}
+
+		public override void AttachEvent(string id)
+		{
+			switch (id)
+			{
+				case ContextMenu.MenuOpeningEvent:
+					this.Control.Opening += (sender, e) => Callback.OnMenuOpening(Widget, EventArgs.Empty);
+					break;
+
+				default:
+					AttachEvent(id);
+					break;
 			}
 		}
 

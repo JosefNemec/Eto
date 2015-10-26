@@ -43,7 +43,7 @@ namespace Eto.Mac.Forms.Menu
 		}
 
 		[Export("menuWillOpen:")]
-		public void MenuWillOpen(NSMenu menu)
+		public void HandleMenuWillOpen(NSMenu menu)
 		{
 			Handler.Callback.OnMenuOpening(Handler.Widget, EventArgs.Empty);
 		}
@@ -62,6 +62,20 @@ namespace Eto.Mac.Forms.Menu
 			};
 
 			Control.Delegate = ContextHandler.Instance;
+		}
+
+		public override void AttachEvent(string id)
+		{
+			switch (id)
+			{
+				case ContextMenu.MenuOpeningEvent:
+					// handled by delegate
+					break;
+
+				default:
+					AttachEvent(id);
+					break;
+			}
 		}
 
 		public void AddMenu (int index, MenuItem item)
