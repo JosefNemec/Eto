@@ -3,7 +3,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-
 namespace Eto
 {
 
@@ -74,7 +73,6 @@ namespace Eto
 
 			return value.Replace("__", "_");
 		}
-
-	}
+    }
 
 }

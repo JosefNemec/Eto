@@ -19,7 +19,7 @@ namespace Eto.WinForms.Forms
 #if WPF
  IWpfWindow
 #elif WINFORMS
-    IWindowHandler
+	IWindowHandler
 #endif
 	{
 #if WPF
@@ -33,25 +33,25 @@ namespace Eto.WinForms.Forms
 		}
 #elif WINFORMS
 
-    class Win32WindowImplementation : swf.IWin32Window
-    {
-      public Win32WindowImplementation(IntPtr hWnd)
-      {
-        Handle = hWnd;
-      }
+	class Win32WindowImplementation : swf.IWin32Window
+	{
+	  public Win32WindowImplementation(IntPtr hWnd)
+	  {
+		Handle = hWnd;
+	  }
 
-      public IntPtr Handle { get; private set; }
-    }
+	  public IntPtr Handle { get; private set; }
+	}
 
-    public swf.ToolTip ToolTips
-    {
-      get { throw new NotImplementedException(); }
-    }
+	public swf.ToolTip ToolTips
+	{
+	  get { throw new NotImplementedException(); }
+	}
 
-    public swf.IWin32Window Win32Window
-    {
-      get { return new Win32WindowImplementation(Control); }
-    }
+	public swf.IWin32Window Win32Window
+	{
+	  get { return new Win32WindowImplementation(Control); }
+	}
 
 #endif
 
@@ -483,5 +483,36 @@ namespace Eto.WinForms.Forms
 				throw new NotImplementedException();
 			}
 		}
+
+		public bool AllowDrag
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
+
+			set
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+		public bool AllowDrop
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
+
+			set
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+        public void DoDragDrop(DragDropData data, DragDropAction allowedAction)
+        {
+            throw new NotImplementedException();
+        }
 	}
 }

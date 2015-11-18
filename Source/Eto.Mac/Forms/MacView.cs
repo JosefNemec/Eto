@@ -93,69 +93,131 @@ namespace Eto.Mac.Forms
 	}
 
 	public abstract class MacView<TControl, TWidget, TCallback> : MacObject<TControl, TWidget, TCallback>, Control.IHandler, IMacViewHandler
-		where TControl: NSObject
-		where TWidget: Control
-		where TCallback: Control.ICallback
+		where TControl : NSObject
+		where TWidget : Control
+		where TCallback : Control.ICallback
 	{
 		bool mouseMove;
 		NSTrackingArea tracking;
 		NSTrackingAreaOptions mouseOptions;
 		MouseDelegate mouseDelegate;
 
-		public override IntPtr NativeHandle { get { return Control.Handle; } }
+		public override IntPtr NativeHandle
+		{
+			get
+			{
+				return Control.Handle;
+			}
+		}
 
-		Control.ICallback IMacViewHandler.Callback { get { return Callback; } }
+		Control.ICallback IMacViewHandler.Callback
+		{
+			get
+			{
+				return Callback;
+			}
+		}
 
-		public abstract NSView ContainerControl { get; }
+		public abstract NSView ContainerControl
+		{
+			get;
+		}
 
-		public virtual NSView ContentControl { get { return ContainerControl; } }
+		public virtual NSView ContentControl
+		{
+			get
+			{
+				return ContainerControl;
+			}
+		}
 
-		public virtual NSView EventControl { get { return ContainerControl; } }
+		public virtual NSView EventControl
+		{
+			get
+			{
+				return ContainerControl;
+			}
+		}
 
-		public virtual NSView FocusControl { get { return EventControl; } }
+		public virtual NSView FocusControl
+		{
+			get
+			{
+				return EventControl;
+			}
+		}
 
 		static readonly object AutoSize_Key = new object();
 		public virtual bool AutoSize
 		{
-			get { return Widget.Properties.Get<bool>(AutoSize_Key, true); }
-			protected set { Widget.Properties.Set(AutoSize_Key, value, true); }
+			get
+			{
+				return Widget.Properties.Get<bool>(AutoSize_Key, true);
+			}
+			protected set
+			{
+				Widget.Properties.Set(AutoSize_Key, value, true);
+			}
 		}
 
 		protected virtual Size DefaultMinimumSize
 		{
-			get { return Size.Empty; }
+			get
+			{
+				return Size.Empty;
+			}
 		}
 
 		static readonly object MinimumSize_Key = new object();
 		public virtual Size MinimumSize
 		{
-			get { return Widget.Properties.Get<Size?>(MinimumSize_Key) ?? DefaultMinimumSize; }
-			set { Widget.Properties[MinimumSize_Key] = value; NaturalSize = null; }
+			get
+			{
+				return Widget.Properties.Get<Size?>(MinimumSize_Key) ?? DefaultMinimumSize;
+			}
+			set
+			{
+				Widget.Properties[MinimumSize_Key] = value;
+				NaturalSize = null;
+			}
 		}
 
 		static readonly object MaximumSize_Key = new object();
 		public virtual SizeF MaximumSize
 		{
-			get { return Widget.Properties.Get<SizeF?>(MaximumSize_Key) ?? SizeF.MaxValue; }
-			set { Widget.Properties[MaximumSize_Key] = value; }
+			get
+			{
+				return Widget.Properties.Get<SizeF?>(MaximumSize_Key) ?? SizeF.MaxValue;
+			}
+			set
+			{
+				Widget.Properties[MaximumSize_Key] = value;
+			}
 		}
 
 		static readonly object PreferredSize_Key = new object();
 		public Size? PreferredSize
 		{
-			get { return Widget.Properties.Get<Size?>(PreferredSize_Key); }
-			set { Widget.Properties[PreferredSize_Key] = value; }
+			get
+			{
+				return Widget.Properties.Get<Size?>(PreferredSize_Key);
+			}
+			set
+			{
+				Widget.Properties[PreferredSize_Key] = value;
+			}
 		}
 
 		public virtual Size Size
 		{
-			get { 
+			get
+			{
 				if (!Widget.Loaded)
 					return PreferredSize ?? new Size(-1, -1);
-				return ContainerControl.Frame.Size.ToEtoSize(); 
+				return ContainerControl.Frame.Size.ToEtoSize();
 			}
 			set
-			{ 
+			{
 				var oldSize = GetPreferredSize(Size.MaxValue);
 				PreferredSize = value;
 
@@ -180,11 +242,23 @@ namespace Eto.Mac.Forms
 		static readonly object NaturalSize_Key = new object();
 		protected SizeF? NaturalSize
 		{
-			get { return Widget.Properties.Get<SizeF?>(NaturalSize_Key); }
-			set { Widget.Properties[NaturalSize_Key] = value; }
+			get
+			{
+				return Widget.Properties.Get<SizeF?>(NaturalSize_Key);
+			}
+			set
+			{
+				Widget.Properties[NaturalSize_Key] = value;
+			}
 		}
 
-		public virtual NSObject CustomFieldEditor { get { return null; } }
+		public virtual NSObject CustomFieldEditor
+		{
+			get
+			{
+				return null;
+			}
+		}
 
 		protected virtual bool LayoutIfNeeded(SizeF? oldPreferredSize = null, bool force = false)
 		{
@@ -237,7 +311,13 @@ namespace Eto.Mac.Forms
 			return SizeF.Min(SizeF.Max(size, MinimumSize), MaximumSize);
 		}
 
-		public virtual Size PositionOffset { get { return Size.Empty; } }
+		public virtual Size PositionOffset
+		{
+			get
+			{
+				return Size.Empty;
+			}
+		}
 
 		void CreateTracking()
 		{
@@ -322,11 +402,16 @@ namespace Eto.Mac.Forms
 					AddMethod(selBecomeFirstResponder, new Func<IntPtr, IntPtr, bool>(TriggerGotFocus), "B@:");
 					break;
 				case Eto.Forms.Control.ShownEvent:
-				// TODO
+					// TODO
 					break;
 				case Eto.Forms.Control.TextInputEvent:
 					AddMethod(selInsertText, new Action<IntPtr, IntPtr, IntPtr>(TriggerTextInput), "v@:@");
 					break;
+
+				case Eto.Forms.Control.DragDropEvent:
+
+					break;
+
 				default:
 					base.AttachEvent(id);
 					break;
@@ -429,7 +514,7 @@ namespace Eto.Mac.Forms
 				var args = MacConversions.GetMouseEvent(handler.ContainerControl, theEvent, false);
 				if (theEvent.ClickCount >= 2)
 					handler.Callback.OnMouseDoubleClick(handler.Widget, args);
-			
+
 				if (!args.Handled)
 				{
 					handler.Callback.OnMouseDown(handler.Widget, args);
@@ -545,8 +630,14 @@ namespace Eto.Mac.Forms
 
 		bool InitialFocus
 		{
-			get { return Widget.Properties.Get<bool?>(InitialFocusKey) ?? false; }
-			set { Widget.Properties[InitialFocusKey] = value ? (object)true : null; }
+			get
+			{
+				return Widget.Properties.Get<bool?>(InitialFocusKey) ?? false;
+			}
+			set
+			{
+				Widget.Properties[InitialFocusKey] = value ? (object)true : null;
+			}
 		}
 
 		public virtual void Focus()
@@ -560,7 +651,10 @@ namespace Eto.Mac.Forms
 		static readonly object BackgroundColorKey = new object();
 		public virtual Color BackgroundColor
 		{
-			get { return Widget.Properties.Get<Color?>(BackgroundColorKey) ?? Colors.Transparent; }
+			get
+			{
+				return Widget.Properties.Get<Color?>(BackgroundColorKey) ?? Colors.Transparent;
+			}
 			set
 			{
 				Widget.Properties[BackgroundColorKey] = value;
@@ -571,14 +665,17 @@ namespace Eto.Mac.Forms
 
 		protected virtual void SetBackgroundColor(Color? color)
 		{
-			if (color != null) {
-				if (color.Value.A > 0) {
+			if (color != null)
+			{
+				if (color.Value.A > 0)
+				{
 					ContainerControl.WantsLayer = true;
 					var layer = ContainerControl.Layer;
 					if (layer != null)
 						layer.BackgroundColor = color.Value.ToCG();
 				}
-				else {
+				else
+				{
 					ContainerControl.WantsLayer = false;
 					var layer = ContainerControl.Layer;
 					if (layer != null)
@@ -587,14 +684,23 @@ namespace Eto.Mac.Forms
 			}
 		}
 
-		public abstract bool Enabled { get; set; }
+		public abstract bool Enabled
+		{
+			get; set;
+		}
 
 		static readonly object ShouldHaveFocusKey = new object();
 
 		public bool? ShouldHaveFocus
 		{
-			get { return Widget.Properties.Get<bool?>(ShouldHaveFocusKey); }
-			set { Widget.Properties[ShouldHaveFocusKey] = value; }
+			get
+			{
+				return Widget.Properties.Get<bool?>(ShouldHaveFocusKey);
+			}
+			set
+			{
+				Widget.Properties[ShouldHaveFocusKey] = value;
+			}
 		}
 
 		public virtual bool HasFocus
@@ -607,9 +713,12 @@ namespace Eto.Mac.Forms
 
 		public virtual bool Visible
 		{
-			get { return !ContainerControl.Hidden; }
+			get
+			{
+				return !ContainerControl.Hidden;
+			}
 			set
-			{ 
+			{
 				if (ContainerControl.Hidden == value)
 				{
 					var oldSize = GetPreferredSize(Size.MaxValue);
@@ -637,15 +746,22 @@ namespace Eto.Mac.Forms
 
 		public virtual Cursor CurrentCursor
 		{
-			get { return Cursor; }
+			get
+			{
+				return Cursor;
+			}
 		}
 
 		static readonly object Cursor_Key = new object();
 
 		public virtual Cursor Cursor
 		{
-			get { return Widget.Properties.Get<Cursor>(Cursor_Key); }
-			set {
+			get
+			{
+				return Widget.Properties.Get<Cursor>(Cursor_Key);
+			}
+			set
+			{
 				if (Cursor != value)
 				{
 					Widget.Properties[Cursor_Key] = value;
@@ -656,8 +772,14 @@ namespace Eto.Mac.Forms
 
 		public string ToolTip
 		{
-			get { return ContentControl.ToolTip; }
-			set { ContentControl.ToolTip = value ?? string.Empty; }
+			get
+			{
+				return ContentControl.ToolTip;
+			}
+			set
+			{
+				ContentControl.ToolTip = value ?? string.Empty;
+			}
 		}
 
 		public void Print(PrintSettings settings)
@@ -698,7 +820,13 @@ namespace Eto.Mac.Forms
 			Callback.OnKeyDown(Widget, e);
 		}
 
-		Control IMacViewHandler.Widget { get { return Widget; } }
+		Control IMacViewHandler.Widget
+		{
+			get
+			{
+				return Widget;
+			}
+		}
 
 		public virtual PointF PointFromScreen(PointF point)
 		{
@@ -729,7 +857,7 @@ namespace Eto.Mac.Forms
 		Point Control.IHandler.Location
 		{
 			get
-			{ 
+			{
 				var frame = ContentControl.Frame;
 				var location = frame.Location;
 				var super = ContentControl.Superview;
@@ -742,7 +870,7 @@ namespace Eto.Mac.Forms
 		static void TriggerSystemAction(IntPtr sender, IntPtr sel, IntPtr e)
 		{
 			var control = Runtime.GetNSObject(sender);
-			var handler = GetHandler(control) as MacView<TControl,TWidget,TCallback>;
+			var handler = GetHandler(control) as MacView<TControl, TWidget, TCallback>;
 			if (handler != null)
 			{
 				Command command;
@@ -763,7 +891,7 @@ namespace Eto.Mac.Forms
 			var actionHandle = Messaging.IntPtr_objc_msgSend(item, selGetAction);
 
 			var control = Runtime.GetNSObject(sender);
-			var handler = GetHandler(control) as MacView<TControl,TWidget,TCallback>;
+			var handler = GetHandler(control) as MacView<TControl, TWidget, TCallback>;
 			if (handler != null)
 			{
 				Command command;
@@ -818,7 +946,10 @@ namespace Eto.Mac.Forms
 
 		public virtual IEnumerable<string> SupportedPlatformCommands
 		{
-			get { return systemActionSelectors.Keys; }
+			get
+			{
+				return systemActionSelectors.Keys;
+			}
 		}
 
 		public void MapPlatformCommand(string systemAction, Command command)
@@ -839,6 +970,20 @@ namespace Eto.Mac.Forms
 				AddMethod(sel, new Action<IntPtr, IntPtr, IntPtr>(TriggerSystemAction), "v@:@", control);
 				systemActions[sel] = command;
 			}
+		}
+
+		public bool AllowDrag
+		{
+			get; set;
+		}
+
+		public bool AllowDrop
+		{
+			get; set;
+		}
+
+		public void DoDragDrop(DragDropData data, DragDropAction allowedAction)
+		{
 		}
 	}
 }

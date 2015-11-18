@@ -91,6 +91,7 @@ namespace Eto.WinForms.Forms
 		where TWidget : Control
 		where TCallback : Control.ICallback
 	{
+		bool dragEnabled = false;
 		Size parentMinimumSize;
 
 		public override IntPtr NativeHandle { get { return Control.Handle; } }
@@ -284,9 +285,9 @@ namespace Eto.WinForms.Forms
 					if (!ApplicationHandler.BubbleMouseEvents)
 					{
 						Control.MouseDown += HandleMouseDown;
-						if (ShouldCaptureMouse)
-							HandleEvent(Eto.Forms.Control.MouseUpEvent);
-					}
+                        if (ShouldCaptureMouse)
+                            HandleEvent(Eto.Forms.Control.MouseUpEvent);
+                    }
 					break;
 				case Eto.Forms.Control.MouseUpEvent:
 					if (!ApplicationHandler.BubbleMouseEvents)
@@ -314,13 +315,42 @@ namespace Eto.WinForms.Forms
 				case Eto.Forms.Control.LostFocusEvent:
 					Control.LostFocus += (sender, e) => Callback.OnLostFocus(Widget, EventArgs.Empty);
 					break;
+
+				case Eto.Forms.Control.DragDropEvent:
+					Control.DragDrop += (sender, e) =>
+					{
+                        Callback.OnDragDrop(Widget, GetDragData(e));
+                    };
+					break;
+				case Eto.Forms.Control.DragOverEvent:                  
+
+                    Control.DragEnter += (sender, e) =>
+					{
+                        if (Control.AllowDrop == true)
+                        {
+                            var dragParams = GetDragData(e);
+                            Callback.OnDragEnter(Widget, dragParams);
+
+                            e.Effect = dragParams.Effect.ToPlatformDropAction();
+                        }
+                    };
+					break;
+
 				default:
 					base.AttachEvent(id);
 					break;
 			}
 		}
 
-		void HandleMouseWheel(object sender, swf.MouseEventArgs e)
+        DragEventArgs GetDragData(swf.DragEventArgs data)
+        {
+            var dragData = (data.Data as swf.DataObject).ToEtoDataObject();
+            var sourceWidget = data.Data.GetData("source");
+            var source = sourceWidget == null ? null : (Control)sourceWidget;
+            return new DragEventArgs(source, dragData, data.AllowedEffect.ToEtoDropAction());
+        }
+
+        void HandleMouseWheel(object sender, swf.MouseEventArgs e)
 		{
 			Callback.OnMouseWheel(Widget, e.ToEto(Control));
 		}
@@ -476,12 +506,12 @@ namespace Eto.WinForms.Forms
 			if (Widget.Loaded && Control.IsHandleCreated)
 				Control.Focus();
 			else
-                Widget.LoadComplete += Widget_LoadComplete;
+				Widget.LoadComplete += Widget_LoadComplete;
 		}
 
-        void Widget_LoadComplete(object sender, EventArgs e)
-        {
-            Widget.LoadComplete -= Widget_LoadComplete;
+		void Widget_LoadComplete(object sender, EventArgs e)
+		{
+			Widget.LoadComplete -= Widget_LoadComplete;
 			Control.Focus();
 		}
 
@@ -534,7 +564,7 @@ namespace Eto.WinForms.Forms
 		{
 			SetMinimumSizeInternal(false);
 			SetToolTip();
-		}
+        }
 
 		public virtual void OnUnLoad(EventArgs e)
 		{
@@ -658,7 +688,7 @@ namespace Eto.WinForms.Forms
 
 		public virtual PointF PointFromScreen(PointF point)
 		{
-            return !Control.IsDisposed ? Control.PointToClient(point.ToSDPoint()).ToEto() : PointF.Empty; // safety check added because this is hit in certain situations.
+			return !Control.IsDisposed ? Control.PointToClient(point.ToSDPoint()).ToEto() : PointF.Empty; // safety check added because this is hit in certain situations.
 		}
 
 		public virtual PointF PointToScreen(PointF point)
@@ -682,5 +712,39 @@ namespace Eto.WinForms.Forms
 			get { return Control.ForeColor.ToEto(); }
 			set { Control.ForeColor = value.ToSD(); }
 		}
-	}
+
+		public bool AllowDrag
+		{
+			get
+			{
+				return dragEnabled;
+			}
+
+			set
+			{
+                dragEnabled = value;
+            }
+		}
+
+		public bool AllowDrop
+		{
+			get
+			{
+				return Control.AllowDrop;
+			}
+
+			set
+			{
+				Control.AllowDrop = value;
+            }
+		}
+
+        public void DoDragDrop(DragDropData data, DragDropAction allowedAction)
+        {
+            var dataObject = data.ToPlatformDataObject();
+            dataObject.SetData("source", Widget);
+            var action = allowedAction.ToPlatformDropAction();
+            Control.DoDragDrop(dataObject, action);
+        }
+    }
 }

@@ -27,7 +27,7 @@ namespace Eto.Test
 		{
 			TestAssemblies = DefaultTestAssemblies().ToList();
 			this.Name = "Test Application";
-			this.Style = "application";
+			this.Style = "application";            
 		}
 
 		protected override void OnInitialized(EventArgs e)
